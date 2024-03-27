@@ -24,8 +24,8 @@ monitor=False # active PETSc monitors
 saveEvery=1
 printEvery=1
 accelEveryForw=1
-ref_tol_back = 5e-5
-ref_tol_forw = 1e-6
+ref_tol_back = 1e-5
+ref_tol_forw = 1e-5
 order_back= aa
 order_forw = aa
 delay = 0 # Accel starts at 1=1e-2
