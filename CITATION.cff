@@ -1,0 +1,19 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: >-
+  Fully nonlinear inverse poroelasticity: Stress-free
+  configurationrecovery
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Nicolás Alejandro
+    family-names: Barnafi Wittwer
+    email: nicolas.barnafi@uc.cl
+    affiliation: Pontificia Universidad Católica de Chile
+    orcid: 'https://orcid.org/0000-0001-9818-0342'
+repository-code: 'https://github.com/nabw/inverse-poroelasticity'
+license: CC-BY-4.0
