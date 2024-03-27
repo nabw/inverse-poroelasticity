@@ -8,7 +8,7 @@ The code in this repo was the one we used to develop [add DOI when ready]. In pa
 
 All script take as input the parameters FORMULATION and ACCELERATION:
 
-   python pm-one-phase-2d.py FORM ACC
+    python pm-one-phase-2d.py FORM ACC
 
 where:
  - FORM == 0: Primal formulation
