@@ -2,7 +2,7 @@ from firedrake import *
 from AndersonAcceleration import AndersonAcceleration
 
 # Physical params
-phi0_art = 0.15 #* 0.2
+phi0_art = 0.1 #* 0.2
 kappa = 2e-7
 k = 5e4 # quasi-incomp
 q1a = 22 #1.333
@@ -367,7 +367,7 @@ def psi_mech_heart(F, dim, fibers):
     Fbar = J**(-1/dim) *F
     # Usyk,. mc Culloch 2002
     Cg = 0.88e3
-    bf = 8 # Just use isotropic value
+    bf = 8
     bs = 6
     bn = 3
     bfs = 12

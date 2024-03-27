@@ -4,47 +4,49 @@ from Forms import *
 parameters["form_compiler"]["quadrature_degree"] = 6
 from sys import argv
 
-# Mesh
-case='2D'
-Lx = 1e-2
-Ly = 1e-2
-aa = int(argv[1]) # Acceleration depth
-if case=='2D':
-    Nx = 20
-    Ny = Nx
-    mesh = RectangleMesh(Nx, Ny, Lx, Ly)
-    zero_vec = Constant((0,0))
-    dim=2
-else: # '3D'
-    Nx = 12
-    Ny = Nz = int(Nx/2)
-    mesh = BoxMesh(Nx, Ny, Nz, 5*Lx, Ly, Ly)
-    zero_vec = Constant((0,0,0))
-    dim=3
-dx = dx(mesh)
-ds = ds(mesh)
+# Input parameters
+form = int(argv[1])
+aa = int(argv[2])
 
-# Time discretization
-dt = 1e-2
-ramp_time = 1e-1
+if form == 0:
+    formulation=PRIMAL
+elif form == 1:
+    formulation=MIXEDP
+elif form == 2:
+    formulation=MIXEDU
+else:
+    assert False, "First parameter in {0,1,2}"
 
-# Simulation parameters
+# Script config
 do_backward = True
 do_forward = True
+monitor=False # active PETSc monitors
 saveEvery=1
 printEvery=1
 accelEveryForw=1
-#ref_tol = 1e-6 if case=='2D' else 1e-5
 ref_tol_back = 5e-5
 ref_tol_forw = 1e-6
 order_back= aa
 order_forw = aa
 delay = 0 # Accel starts at 1=1e-2
-formulation=MIXEDU
-monitor=False
+
+# Mesh
+Lx = 1e-2
+Ly = 1e-2
+
+Nx = 12
+Ny = Nz = int(Nx/2)
+mesh = BoxMesh(Nx, Ny, Nz, 5*Lx, Ly, Ly)
+zero_vec = Constant((0,0,0))
+dx = dx(mesh)
+ds = ds(mesh)
+dim=3
+
+# Discretization
+dt = 1e-2
+ramp_time = 1e-1
 u_deg = 2
 phi_deg = 1
-p_deg = 1
 
 # Loading parameters
 theta = 1e-4
@@ -60,6 +62,7 @@ VuP1 = VectorFunctionSpace(mesh, 'CG', 1)
 
 dofs = V.dim()
 parprint("DoFs:", dofs)
+
 # Functions
 sol = functions.sol
 sol0 = functions.sol0
@@ -67,7 +70,6 @@ u, p, phi = functions.u, functions.p, functions.phi
 u0, p0, phi0 = functions.u0, functions.p0, functions.phi0
 phi_n = functions.phi_n
 phi0_n = functions.phi0_n
-
 sol.subfunctions[0].rename('u')
 sol.subfunctions[1].rename('p')
 sol.subfunctions[2].rename('phi')
@@ -101,7 +103,7 @@ res_vec = assemble(FFres, bcs=bcs)
 err0 = sqrt(res_vec.vector().inner(res_vec.vector()))
 time.assign(0.0)
 if do_backward:
-    outfile = File(f"output/pm-one-phase-backward.pvd")
+    outfile = File("output/pm-one-phase-3d-backward.pvd")
     outfile.write(*sol0.subfunctions, t=0)
     converged = False
     t = dt
@@ -149,7 +151,7 @@ res_vec = assemble(FFres, bcs=bcs)
 err0 = sqrt(res_vec.vector().inner(res_vec.vector()))
 time.assign(0.0)
 if do_forward:
-    outfile = File(f"output/pm-one-phase-forward.pvd")
+    outfile = File("output/pm-one-phase-3d-forward.pvd")
     outfile.write(*sol.subfunctions, J_fun, phi_curr, t=0)
     converged = False
     t = dt
@@ -161,7 +163,6 @@ if do_forward:
 
         assemble(FFres, bcs=bcs, tensor=res_vec)
         err = sqrt(res_vec.vector().inner(res_vec.vector()))/err0
-        #err = max(err, err/err0)
         if i % printEvery == 0: print(f"Forward: It {i:4}, time {t:4.3f}, err={err:4.2e}")
         if err < ref_tol_forw and t>= ramp_time:
             converged=True
@@ -172,4 +173,4 @@ if do_forward:
             phi_curr.interpolate(phi/J_fun)
             outfile.write(*sol.subfunctions, J_fun, phi_curr, t=t)
         i, t = i + 1, t+dt
-print("done")
+print("Done")
