@@ -1,6 +1,6 @@
 # Fully nonlinear inverse poroelasticity: Stress-free configurationrecovery
 
-The code in this repo was the one we used to develop [add DOI when ready]. In particular:
+The code in this repo was the one we used to develop this work: https://doi.org/10.1016/j.cma.2024.116960. In particular:
 
 - The script 'pm-one-phase-2d.py' runs the 2d inverse and forward problems in the square. 
 - The script 'pm-one-phase-3d.py' runs the 3d inverse and forward problems in the slab. 
